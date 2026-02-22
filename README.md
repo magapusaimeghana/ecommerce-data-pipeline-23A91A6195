@@ -1,226 +1,191 @@
-# 🚀 Build Data Processing Workflows with Apache Airflow and Docker
+# E-Commerce Data Pipeline & Analytics Project
+## Project Overview
 
-## 📌 Project Overview
-This project demonstrates a complete, production-style **data engineering workflow** using **Apache Airflow**, **Docker**, and **PostgreSQL**.  
-It showcases how to orchestrate ETL pipelines, apply data transformations, export analytics-ready data, implement conditional logic, handle failures, and validate workflows using unit tests.
+This project implements an end-to-end e-commerce data pipeline using Python, PostgreSQL, Docker, and Power BI.
+The pipeline covers data generation, ingestion, transformation, warehousing, and analytics, following industry-standard data engineering practices.
 
-The project consists of **five distinct DAGs**, each highlighting a different workflow orchestration pattern commonly used in real-world data engineering systems.
+The final output is a star-schema data warehouse with interactive dashboards for business insights.
 
----
+## Architecture Overview
+```bash
+Raw CSV Data
+     ↓
+Staging Layer (PostgreSQL)
+     ↓
+Production Layer (Cleaned Data)
+     ↓
+Warehouse Layer (Star Schema)
+     ↓
+Power BI Dashboards
+```
+## Technologies Used
 
-## 🏗️ Architecture Overview
+Python 3.11
 
-**Tech Stack:**
-- Apache Airflow 2.8
-- Docker & Docker Compose
-- PostgreSQL (metadata store + warehouse)
-- Pandas & PyArrow
-- Pytest (unit testing)
+PostgreSQL 14
 
-**Architecture Flow:**
+Docker & Docker Compose
 
-CSV → PostgreSQL → Transformed PostgreSQL → Parquet  
-                     ↘ Conditional Logic  
-                     ↘ Notifications & Error Handling  
+Power BI
 
-All services run inside Docker containers for reproducibility and isolation.
+Faker (Synthetic Data Generation)
 
----
+psycopg2 & SQLAlchemy
 
-## 📂 Project Structure
-
-airflow-data-pipeline/
-├── dags/
-│ ├── dag1_csv_to_postgres.py
-│ ├── dag2_data_transformation.py
-│ ├── dag3_postgres_to_parquet.py
-│ ├── dag4_conditional_workflow.py
-│ └── dag5_notification_workflow.py
-├── tests/
-│ ├── test_dag1.py
-│ ├── test_dag2.py
-│ └── test_utils.py
+## Project Structure
+```bash
+ecommerce-data-pipeline-23A91A6195/
+│
 ├── data/
-│ └── input.csv
-├── output/
-│ └── employee_data_YYYY-MM-DD.parquet
-├── logs/
-├── plugins/
-├── docker-compose.yml
+│   └── raw/
+│       ├── customers.csv
+│       ├── products.csv
+│       ├── transactions.csv
+│       ├── transaction_items.csv
+│       └── generation_metadata.json
+│
+├── scripts/
+│   ├── data_generation/
+│   │   └── generate_data.py
+│   └── ingestion/
+│       └── load_to_staging.py
+│
+├── docker/
+│   ├── Dockerfile
+│   └── docker-compose.yml
+│
+├── dashboards/
+│   ├── powerbi/
+│   │   └── ecommerce_dashboard.pbix
+│   └── screenshots/
+│       ├── sales_overview.png
+│       ├── product_performance.png
+│       ├── customer_analysis.png
+│       └── time_discount_analysis.png
+│
 ├── requirements.txt
 └── README.md
+```
+## Data Pipeline Phases
+Phase 1 — Data Generation
 
-yaml
-Copy code
+Synthetic e-commerce data generated using Faker
 
----
+Customers, products, transactions, and transaction items
 
-## ⚙️ Prerequisites
+Metadata includes record counts and data quality score
 
-Make sure the following are installed:
-- Docker
-- Docker Compose
-- Git
+Phase 2 — Data Ingestion
 
----
+CSV files ingested into PostgreSQL staging schema
 
-## 🐳 Setup Instructions (Docker)
+Fast bulk loading using COPY
 
-### 1️⃣ Clone Repository
-```bash
-git clone https://github.com/Chopra-14/airflow-data-processing-workflows.git
-cd airflow-data-processing-workflows
-2️⃣ Start Airflow Environment
-bash
-Copy code
-docker compose up -d
-🌐 Access Airflow UI
-URL: http://localhost:8080
+Data integrity validated (no orphan records)
 
-Username: admin
+Phase 3 — Data Transformation
 
-Password: admin
+Cleaned data moved to production schema
 
-🔄 DAG Descriptions & Execution
-🟢 DAG 1 — CSV to PostgreSQL Ingestion
-DAG ID: csv_to_postgres_ingestion
+Standardization (emails lower-cased, duplicates removed)
 
-Creates raw_employee_data table
+Ready for analytics
 
-Truncates table (idempotent)
+Phase 4 — Data Warehouse
 
-Loads CSV data from data/input.csv
+Star schema implemented:
 
-Trigger:
-Enable → Trigger DAG
-Expected Output:
+Dimension tables: customers, products, date
 
-Table populated with 100 rows
+Fact table: sales
 
-🟢 DAG 2 — Data Transformation Pipeline
-DAG ID: data_transformation_pipeline
+Optimized for analytical queries
 
-Transformations:
+## Data Warehouse Schema
+Fact Table
 
-full_info = name + city
+warehouse.fact_sales
 
-age_group = Young / Mid / Senior
+Dimension Tables
 
-salary_category = Low / Medium / High
+warehouse.dim_customers
 
-year_joined extracted from join_date
+warehouse.dim_products
 
-Expected Output:
+warehouse.dim_date
 
-transformed_employee_data table with transformed columns
+This design improves query performance and BI reporting.
 
-🟢 DAG 3 — PostgreSQL to Parquet Export
-DAG ID: postgres_to_parquet_export
+## Dashboards & Analytics (Power BI)
+Dashboards Created
 
-Checks source table
+Sales Overview
 
-Exports data to Parquet using pyarrow + snappy
+Total revenue
 
-Validates file schema
+Total orders
 
-Expected Output:
+Average order value
 
-Parquet file created in output/ directory
-Example:
+Monthly revenue trend
 
-Copy code
-employee_data_2026-01-03.parquet
-🟢 DAG 4 — Conditional Workflow
-DAG ID: conditional_workflow_pipeline
+Product Performance
 
-Branching Logic:
+Revenue by category
 
-Day	Branch
-Mon–Wed	Weekday
-Thu–Fri	End-of-week
-Sat–Sun	Weekend
+Top 10 products by revenue
 
-Uses BranchPythonOperator
+Brand performance
 
-Only one branch runs per execution
+Customer Analysis
 
-End task always runs
+Revenue by age group
 
-🟢 DAG 5 — Notifications & Error Handling
-DAG ID: notification_workflow
+Revenue by state
 
-Logic:
+Top customers by spend
 
-Task fails if execution day % 5 == 0
+Time & Discount Analysis
 
-Success & failure callbacks
+Monthly sales trend
 
-Cleanup task runs always
+Quarterly sales
 
-Expected Behavior:
+Discount vs revenue impact
 
-Success days → success notification
+## Power BI Connection Details
+Field	Value
+Server	localhost
+Port	5432
+Database	ecommerce_db
+Username	admin
+Password	password
 
-Failure days → failure notification
+Connect Power BI to warehouse schema only.
 
-Cleanup always executes
+ How to Run the Project
+ Start PostgreSQL using Docker
+docker compose -f docker/docker-compose.yml up -d
 
-🧪 Running Unit Tests
-Unit tests validate DAG structure without running Airflow or connecting to databases.
+ Activate Virtual Environment
+venv\Scripts\activate
 
-Run tests inside Docker container:
-bash
-Copy code
-docker exec -it airflow_webserver bash
-pip install pytest
-pytest /opt/airflow/tests -v
-Expected Result:
-Copy code
-12 passed, 0 failed
-🛠️ Troubleshooting
-❌ DAG not visible?
-Ensure file is inside dags/
+ Generate Data
+python scripts/data_generation/generate_data.py
 
-Check Browse → DAG Import Errors
+ Load Data into Staging
+python scripts/ingestion/load_to_staging.py
 
-Restart Airflow:
+ Run SQL Transformations
 
-bash
-Copy code
-docker compose restart airflow-scheduler airflow-webserver
-❌ PostgreSQL connection error?
-Verify Airflow connection:
+Create schemas and tables
 
-Connection ID: postgres_default
+Move data from staging → production → warehouse
 
-Host: postgres
+ Open Power BI
 
-Schema: airflow_db
+Load warehouse tables
 
-User: airflow_user
+Create dashboards
 
-Password: airflow_pass
-
-❌ Pytest not found?
-Install inside container:
-
-bash
-Copy code
-pip install pytest
-✅ Conclusion
-This project demonstrates:
-
-End-to-end ETL orchestration
-
-Data transformation best practices
-
-Analytics-ready data export
-
-Conditional workflows
-
-Error handling & notifications
-
-Professional unit testing
-
-It reflects real-world data engineering standards using Apache Airflow.
-
+Save screenshots
