@@ -7,7 +7,10 @@ The pipeline covers data generation, ingestion, transformation, warehousing, and
 The final output is a star-schema data warehouse with interactive dashboards for business insights.
 
 ## Architecture Overview
+<<<<<<< HEAD
 ```bash
+=======
+>>>>>>> 3c87368a260028d200f83da90333910390c70cb6
 Raw CSV Data
      ↓
 Staging Layer (PostgreSQL)
@@ -17,7 +20,11 @@ Production Layer (Cleaned Data)
 Warehouse Layer (Star Schema)
      ↓
 Power BI Dashboards
+<<<<<<< HEAD
 ```
+=======
+
+>>>>>>> 3c87368a260028d200f83da90333910390c70cb6
 ## Technologies Used
 
 Python 3.11
@@ -33,7 +40,10 @@ Faker (Synthetic Data Generation)
 psycopg2 & SQLAlchemy
 
 ## Project Structure
+<<<<<<< HEAD
 ```bash
+=======
+>>>>>>> 3c87368a260028d200f83da90333910390c70cb6
 ecommerce-data-pipeline-23A91A6195/
 │
 ├── data/
@@ -65,7 +75,11 @@ ecommerce-data-pipeline-23A91A6195/
 │
 ├── requirements.txt
 └── README.md
+<<<<<<< HEAD
 ```
+=======
+
+>>>>>>> 3c87368a260028d200f83da90333910390c70cb6
 ## Data Pipeline Phases
 Phase 1 — Data Generation
 

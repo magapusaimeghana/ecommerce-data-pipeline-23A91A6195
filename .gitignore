@@ -12,10 +12,10 @@ standalone_admin_password.txt
 
 # Temporary / runtime
 tmp/
-.pid
 .env
+*.pid
 
-# Output data
+# Output / data
 output/
 data/
 
